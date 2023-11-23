@@ -7,6 +7,7 @@ import com.s3example.demo.adapters.representation.BucketObjectRepresentaion;
 import com.s3example.demo.adapters.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,4 +69,8 @@ public class ControllerTests {
         s3Service.deleteMultipleObjects(bucketName, objects);
     }
 
+    @PostMapping(value = "/{bucketName}/objects/file")
+    public void uploadFile(@RequestParam("file")MultipartFile file){
+        s3Service.upload(file);
+    }
 }

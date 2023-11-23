@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.List;
@@ -106,5 +107,33 @@ public class S3Service {
                 objectName
         );
     }
+
+    public void upload(MultipartFile file) {
+
+        String regionName;
+        String bucketName;
+        String fileKeyPath;
+        File dest = null;
+        try{
+            dest = convertMultiPartToFile(file);
+            var putObjectRequest = new PutObjectRequest("sanketbucket3", dest.getName(), dest).withCannedAcl(CannedAccessControlList.Private);
+            amazonS3Client.putObject(putObjectRequest);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            System.out.println( "Uploaded successfully");
+        }
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+    }
+
 
 }
